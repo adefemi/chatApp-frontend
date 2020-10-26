@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Poller+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+$secondaryFont: "Poller One", cursive;
+$primaryFont: "Poppins", sans-serif;
+
+$primaryColor: #2d2e57;
+$secondaryColor: #ec6982;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $primaryFont;
+}
+
+.flex {
+  display: flex;
+
+  &.justify-end {
+    justify-content: flex-end;
+  }
+}
+
+.grid {
+  display: grid;
+
+  &.grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &.grid-gap-2 {
+    grid-column-gap: 2em;
+  }
+}
+
+a {
+  font-size: 14px;
+  color: $secondaryColor;
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 36px;
+  color: $secondaryColor;
+  font-family: $secondaryFont;
+  text-align: center;
+  margin: 50px 0;
+}
+
+button {
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  background-color: $secondaryColor;
+  color: white;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.loginContainer {
+  width: 100%;
+  padding: 50px 20px;
+  background-color: $primaryColor;
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  .inner {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .title {
+    font-size: 26px;
+    text-align: center;
+    color: rgba(white, 0.65);
+    margin-bottom: 50px;
+  }
+
+  .input-field {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 0;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(white, 0.1);
+    outline: none;
+    color: white;
+  }
+
+  .input-container {
+    position: relative;
+
+    img {
+      position: absolute;
+      right: 0;
+      top: 20%;
+    }
+  }
+
+  a {
+    margin-top: 10px;
+  }
+
+  button {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  .socialButton {
+    height: 50px;
+    background-color: rgba(black, 0.19);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+
+    img {
+      margin-right: 10px;
+    }
+  }
+
+  .switchOption {
+    margin-top: 50px;
+    color: rgba(white, 0.33);
+    text-align: center;
+
+    b {
+      font-weight: 500;
+      color: $secondaryColor;
+    }
+  }
+}
