@@ -16,6 +16,19 @@ body {
   font-family: $primaryFont;
 }
 
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  display: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(white, 0.1);
+  border-radius: 50px;
+}
+
 .flex {
   display: flex;
 
@@ -163,22 +176,29 @@ button {
   }
 
   .side {
-    width: 400px;
+    width: 350px;
     box-sizing: border-box;
     background-color: $primaryColorLight;
     position: relative;
 
     .top {
       padding: 30px;
+      img {
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 
   .main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
 
     .heading {
       border-bottom: 2px solid rgba(white, 0.1);
-      padding: 20px 50px;
+      padding: 0 50px;
+      height: 80px;
 
       .rightItems {
         img:first-child {
@@ -195,7 +215,7 @@ button {
   margin: 0 30px;
   margin-bottom: 30px;
   background-color: #3b3b65;
-  height: 40px;
+  height: 35px;
   border-radius: 40px;
   position: relative;
   overflow: hidden;
@@ -223,34 +243,40 @@ button {
   display: flex;
   align-items: center;
   .imageCon {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50px;
     background-color: darken($primaryColor, 20%);
-    margin-right: 20px;
+    margin-right: 15px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: white;
   }
 
   .subContent {
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(white, 0.4);
   }
   &.version2 {
     .imageCon {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       margin-right: 10px;
     }
 
     .name {
-      font-size: 14px;
-      line-height: 10px;
-      margin-top: 5px;
+      font-size: 13px;
+      line-height: 15px;
+    }
+    .subContent {
+      font-size: 10px;
+      color: rgba(white, 0.4);
     }
   }
 }
@@ -265,14 +291,14 @@ button {
   margin-bottom: 25px;
 
   .counter {
-    width: 20px;
-    height: 20px;
-    border-radius: 20px;
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
     background-color: $secondaryColor;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     color: white;
   }
 }
@@ -282,12 +308,12 @@ button {
 
   .chatbubble {
     max-width: 600px;
-    padding: 15px;
+    padding: 10px;
     background-color: #3d4067;
     color: white;
     margin-bottom: 15px;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: 4px;
+    font-size: 12px;
     display: flex;
     flex-direction: column;
 
@@ -296,7 +322,7 @@ button {
     }
 
     .time {
-      font-size: 12px;
+      font-size: 10px;
       margin-top: 5px;
       color: rgba(white, 0.5);
       align-self: flex-end;
@@ -314,22 +340,29 @@ button {
 .chatArea {
   margin: 0 auto;
   padding: 20px 40px;
-  height: 100%;
+  flex: 1;
   overflow: auto;
-  max-height: calc(100vh - 350px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .messageZone {
-  padding: 20px 40px;
+  border-top: 2px solid rgba(white, 0.1);
+  height: 150px;
+  padding: 10px 40px;
+  box-sizing: border-box;
+
   textarea {
     margin-top: 10px;
     width: 100%;
     border-radius: 4px;
     background-color: $primaryColorLight;
-    outline-color: $tertiaryColor;
     border: none;
-    padding: 20px;
+    padding: 10px;
+    height: 70%;
     box-sizing: border-box;
+    outline: none;
+    color: white;
   }
 }
 
@@ -340,4 +373,131 @@ button {
 
   font-size: 10px;
   color: rgba(white, 0.1);
+}
+
+.modalContain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background-color: rgba(black, 0.19);
+  transition: 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+
+  .content-inner {
+    background-color: $primaryColor;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    width: 100%;
+
+    .header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(white, 0.66);
+      font-size: 15px;
+      border-bottom: 1px solid rgba(white, 0.05);
+
+      img {
+        width: 15px;
+        cursor: pointer;
+      }
+    }
+
+    .content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+
+      .inner {
+        display: flex;
+        max-width: 80%;
+        margin: 30px auto;
+        width: 100%;
+
+        .leftHook {
+          flex: 1;
+          margin-right: 50px;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+
+          .imageCon {
+            width: 100px;
+            height: 100px;
+            border-radius: 100px;
+            margin-bottom: 10px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+          }
+
+          .point {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            color: rgba(white, 0.5);
+            cursor: pointer;
+
+            img {
+              margin-left: 5px;
+            }
+          }
+        }
+
+        .dataInput {
+          flex: 3;
+          label,
+          span {
+            display: block;
+          }
+
+          label {
+            margin-bottom: 20px;
+            span {
+              font-size: 13px;
+              color: rgba(white, 0.5);
+            }
+
+            input,
+            textarea {
+              width: 100%;
+              padding: 0 10px;
+              box-sizing: border-box;
+              height: 35px;
+              border-radius: 4px;
+              outline: none;
+              background-color: $primaryColorLight;
+              border: none;
+              color: white;
+            }
+
+            textarea {
+              height: 100px;
+              padding: 10px;
+            }
+          }
+        }
+      }
+
+      button {
+        width: 50%;
+        height: 40px;
+        margin: 0 auto;
+        margin-bottom: 50px;
+      }
+    }
+  }
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
 }
