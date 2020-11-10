@@ -18,7 +18,7 @@ const Home = (props) => {
 
   return (
     <>
-      <ProfileModal visible={showProfile} close={() => setShowProfile(false)} />
+      <ProfileModal close={() => setShowProfile(false)} visible={showProfile} />
       <div className="home-container">
         <div className="side">
           <div className="flex align-center justify-between top">

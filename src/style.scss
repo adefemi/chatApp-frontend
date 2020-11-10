@@ -105,22 +105,24 @@ button {
 
   .input-field {
     width: 100%;
-    margin-top: 20px;
-    padding: 10px 0;
+
+    padding: 10px;
     background-color: transparent;
     border: none;
     border-bottom: 1px solid rgba(white, 0.1);
     outline: none;
     color: white;
+    box-sizing: border-box;
   }
 
   .input-container {
     position: relative;
-
+    margin-top: 20px;
     img {
       position: absolute;
-      right: 0;
-      top: 20%;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 
@@ -499,5 +501,54 @@ button {
   &.open {
     opacity: 1;
     visibility: visible;
+  }
+}
+
+.authContainer {
+  background-color: $primaryColor;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  border-radius: 30px;
+  animation: rotate 500ms linear infinite;
+}
+
+.centerAll {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+.errorHolder {
+  background-color: red;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+
+  position: relative;
+
+  img {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 10px;
+    cursor: pointer;
   }
 }
