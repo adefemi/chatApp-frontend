@@ -13,7 +13,7 @@ export const activeChatState = {
 };
 
 export const userDetailState = {
-  userDetail: "",
+  userDetail: null,
 };
 
 export const activeChatReducer = (state, action) => {

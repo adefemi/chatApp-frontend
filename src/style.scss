@@ -248,7 +248,7 @@ button {
     width: 50px;
     height: 50px;
     border-radius: 50px;
-    background-color: darken($primaryColor, 20%);
+    background-color: darken($primaryColor, 5%);
     margin-right: 15px;
     background-size: cover;
     background-repeat: no-repeat;
@@ -270,6 +270,7 @@ button {
       width: 40px;
       height: 40px;
       margin-right: 10px;
+      background-color: darken($primaryColor, 5%);
     }
 
     .name {
@@ -439,6 +440,7 @@ button {
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
+            background-color: darken($primaryColor, 5%);
           }
 
           .point {

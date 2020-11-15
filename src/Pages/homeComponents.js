@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import close from "../assets/close.png";
 import edit from "../assets/edit.png";
+import Loader from "../components/loader";
+import { axiosHandler, errorHandler, getToken } from "../helper";
+import { PROFILE_URL } from "../urls";
 
 export const UserMain = (props) => {
   return (
@@ -45,20 +48,54 @@ export const ChatBubble = (props) => {
 };
 
 export const ProfileModal = (props) => {
+  const [profileData, setProfileData] = useState({
+    ...props.userDetail,
+    user_id: props.userDetail.user.id,
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+    const token = await getToken(props);
+    const url =
+      PROFILE_URL +
+      `${props.userDetail.first_name ? `/${profileData.user_id}` : ""}`;
+    const method = props.userDetail.first_name ? "patch" : "post";
+    const profile = await axiosHandler({
+      method,
+      url,
+      data: profileData,
+      token,
+    }).catch((e) => alert(errorHandler(e)));
+    setSubmitted(false);
+    if (profile) {
+      props.setClosable();
+      console.log(profile.data);
+    }
+  };
+
+  const onChange = (e) => {
+    setProfileData({
+      ...profileData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
     <div className={`modalContain ${props.visible ? "open" : ""}`}>
       <div className="content-inner">
         <div className="header">
           <div className="title">Update Profile</div>
-          <img src={close} onClick={props.close} />
+          {props.closable && <img src={close} onClick={props.close} />}
         </div>
-        <div className="content">
+        <form className="content" onSubmit={submit}>
           <div className="inner">
             <div className="leftHook">
               <div
                 className="imageCon"
                 style={{
-                  backgroundImage: `url("https://cdn.pixabay.com/photo/2017/05/25/21/26/bird-feeder-2344414__340.jpg")`,
+                  backgroundImage: `url("")`,
                 }}
               />
               <div className="point">
@@ -69,24 +106,52 @@ export const ProfileModal = (props) => {
             <div className="dataInput">
               <label>
                 <span>First name</span>
-                <input />
+                <input
+                  name="first_name"
+                  value={profileData.first_name}
+                  onChange={onChange}
+                  required
+                />
               </label>
               <label>
                 <span>Last name</span>
-                <input />
+                <input
+                  name="last_name"
+                  value={profileData.last_name}
+                  onChange={onChange}
+                  required
+                />
               </label>
               <label>
                 <span>Caption</span>
-                <input />
+                <input
+                  name="caption"
+                  value={profileData.caption}
+                  onChange={onChange}
+                  required
+                />
               </label>
               <label>
                 <span>About</span>
-                <textarea />
+                <textarea
+                  name="about"
+                  value={profileData.about}
+                  onChange={onChange}
+                  required
+                />
               </label>
             </div>
           </div>
-          <button>Update</button>
-        </div>
+          <button type="submit" disabled={submitted}>
+            {submitted ? (
+              <center>
+                <Loader />
+              </center>
+            ) : (
+              "Update"
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );

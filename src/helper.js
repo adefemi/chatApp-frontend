@@ -1,4 +1,6 @@
 import Axios from "axios";
+import { logout, tokenName } from "./Pages/authController";
+import { ME_URL, REFERESH_URL } from "./urls";
 
 export const axiosHandler = ({
   method = "",
@@ -54,4 +56,32 @@ const loopObj = (obj) => {
     }
   }
   return agg;
+};
+
+export const getToken = async (props) => {
+  let token = localStorage.getItem(tokenName);
+  if (!token) logout(props);
+  token = JSON.parse(token);
+  const userProfile = await axiosHandler({
+    method: "get",
+    url: ME_URL,
+    token: token.access,
+  }).catch((e) => null);
+  if (userProfile) {
+    return token.access;
+  } else {
+    const getNewAccess = await axiosHandler({
+      method: "post",
+      url: REFERESH_URL,
+      data: {
+        refresh: token.refresh,
+      },
+    }).catch((e) => null);
+    if (getNewAccess) {
+      localStorage.setItem(tokenName, JSON.stringify(getNewAccess.data));
+      return getNewAccess.data.access;
+    } else {
+      logout(props);
+    }
+  }
 };
