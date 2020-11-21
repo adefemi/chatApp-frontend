@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Loader from "../components/loader";
 import { axiosHandler, getToken } from "../helper";
-import { REFERESH_URL, ME_URL, LOGIN_URL } from "../urls";
+import { REFERESH_URL, ME_URL, LOGOUT_URL } from "../urls";
 import { store } from "../stateManagement/store";
 import { userDetailAction } from "../stateManagement/actions";
 
@@ -11,7 +11,7 @@ export const logout = (props) => {
   if (localStorage.getItem(tokenName)) {
     axiosHandler({
       method: "get",
-      url: LOGIN_URL,
+      url: LOGOUT_URL,
       token: getToken(),
     });
   }
