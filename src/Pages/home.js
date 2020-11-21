@@ -3,16 +3,13 @@ import favorite from "../assets/star.png";
 import smiley from "../assets/smiley.png";
 import send from "../assets/send.png";
 import settings from "../assets/settings.png";
-import search from "../assets/search.png";
-import logout from "../assets/logout.png";
-import {
-  ChatBubble,
-  UserAvatar,
-  UserMain,
-  ProfileModal,
-} from "./homeComponents";
+
+import logoutPng from "../assets/logout.png";
+import { ChatBubble, UserAvatar, ProfileModal } from "./homeComponents";
 import { store } from "../stateManagement/store";
 import Loader from "../components/loader";
+import { logout } from "./authController";
+import UsersList from "./usersList";
 
 const Home = (props) => {
   const [showProfile, setShowProfile] = useState(false);
@@ -54,33 +51,20 @@ const Home = (props) => {
       <div className="home-container">
         <div className="side">
           <div className="flex align-center justify-between top">
-            <UserAvatar noStatus isV2 />
+            <UserAvatar
+              noStatus
+              isV2
+              name={`${userdetail.first_name || ""} ${
+                userdetail.last_name || ""
+              }`}
+              profilePicture={userdetail.profile_picture}
+            />
             <img src={settings} onClick={() => setShowProfile(true)} />
           </div>
 
-          <div className="searchCon">
-            <img src={search} />
-            <input placeholder="Search users" />
-          </div>
-
-          <div className="userList">
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-            <UserMain />
-          </div>
-          <div className="logout">
-            <img src={logout} />
+          <UsersList />
+          <div className="logout" onClick={() => logout(props)}>
+            <img src={logoutPng} />
             <div>logout</div>
           </div>
         </div>

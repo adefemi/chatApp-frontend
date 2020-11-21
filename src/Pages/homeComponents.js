@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import close from "../assets/close.png";
 import edit from "../assets/edit.png";
 import Loader from "../components/loader";
 import { axiosHandler, errorHandler, getToken } from "../helper";
+import { userDetailAction } from "../stateManagement/actions";
+import { store } from "../stateManagement/store";
 import { PROFILE_URL } from "../urls";
 
 export const UserMain = (props) => {
   return (
     <div className="flex align-center justify-between userMain">
-      <UserAvatar isV2 />
-      <div className="counter">2</div>
+      <UserAvatar
+        isV2
+        name={props.name}
+        profilePicture={props.profilePicture}
+        caption={props.caption}
+      />
+      {props.count ||
+        (props.count > 0 && <div className="counter">{props.count}</div>)}
     </div>
   );
 };
@@ -20,14 +28,12 @@ export const UserAvatar = (props) => {
       <div
         className="imageCon"
         style={{
-          backgroundImage: `url("https://cdn.pixabay.com/photo/2017/05/25/21/26/bird-feeder-2344414__340.jpg")`,
+          backgroundImage: `url("${props.profilePicture}")`,
         }}
       />
       <div className="contents">
-        <div className="name">Andy Hui</div>
-        {!props.noStatus && (
-          <div className="subContent">Random status message</div>
-        )}
+        <div className="name">{props.name}</div>
+        {!props.noStatus && <div className="subContent">{props.caption}</div>}
       </div>
     </div>
   );
@@ -54,6 +60,8 @@ export const ProfileModal = (props) => {
   });
   const [submitted, setSubmitted] = useState(false);
 
+  const { dispatch } = useContext(store);
+
   const submit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
@@ -71,7 +79,7 @@ export const ProfileModal = (props) => {
     setSubmitted(false);
     if (profile) {
       props.setClosable();
-      console.log(profile.data);
+      dispatch({ type: userDetailAction, payload: profile.data });
     }
   };
 

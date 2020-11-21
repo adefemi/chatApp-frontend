@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import eyeopen from "../assets/eyeopen.png";
 import eyeclose from "../assets/eyeclose.png";
 import google from "../assets/google.png";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { axiosHandler, errorHandler } from "../helper";
 import { LOGIN_URL } from "../urls";
 import Loader from "../components/loader";
-import { tokenName } from "./authController";
+import { checkAuthState, tokenName } from "./authController";
 
 export const loginRequest = async (data, setError, props) => {
   const result = await axiosHandler({
@@ -27,6 +27,17 @@ const Login = (props) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState();
+  const [checking, setChecking] = useState(localStorage.getItem(tokenName));
+
+  useEffect(() => {
+    if (checking) {
+      checkAuthState(
+        () => null,
+        () => props.history.push("/"),
+        props
+      );
+    }
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -45,32 +56,38 @@ const Login = (props) => {
 
   return (
     <div className="loginContainer">
-      <div className="inner">
-        <div className="logo">DEVTOT</div>
-        <div className="title">Sign in</div>
-        <AuthForm
-          login
-          data={loginData}
-          onSubmit={submit}
-          onChange={onChange}
-          showPassword={showPassword}
-          error={error}
-          loading={loading}
-          setError={setError}
-          setShowPassword={setShowPassword}
-        />
-        <div className="grid grid-2 grid-gap-2">
-          <div className="socialButton">
-            <img src={twitter} /> <span>Twitter</span>
+      {checking ? (
+        <div className="centerAll">
+          <Loader />
+        </div>
+      ) : (
+        <div className="inner">
+          <div className="logo">DEVTOT</div>
+          <div className="title">Sign in</div>
+          <AuthForm
+            login
+            data={loginData}
+            onSubmit={submit}
+            onChange={onChange}
+            showPassword={showPassword}
+            error={error}
+            loading={loading}
+            setError={setError}
+            setShowPassword={setShowPassword}
+          />
+          <div className="grid grid-2 grid-gap-2">
+            <div className="socialButton">
+              <img src={twitter} /> <span>Twitter</span>
+            </div>
+            <div className="socialButton">
+              <img src={google} /> <span>Google</span>
+            </div>
           </div>
-          <div className="socialButton">
-            <img src={google} /> <span>Google</span>
+          <div className="switchOption">
+            Don’t have an accout yet? <Link to="/register">Sign up</Link>
           </div>
         </div>
-        <div className="switchOption">
-          Don’t have an accout yet? <Link to="/register">Sign up</Link>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
