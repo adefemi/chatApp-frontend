@@ -6,6 +6,8 @@ import {
   userDetailState,
   activeChatReducer,
   activeChatState,
+  activeChatUserReducer,
+  activeChatUserState,
 } from "./reducers";
 
 const reduceReducers = (...reducers) => (prevState, value, ...args) => {
@@ -18,13 +20,15 @@ const reduceReducers = (...reducers) => (prevState, value, ...args) => {
 const combinedReducers = reduceReducers(
   updateChatReducer,
   userDetailReducer,
-  activeChatReducer
+  activeChatReducer,
+  activeChatUserReducer
 );
 
 const initialState = {
   ...updateChatState,
   ...userDetailState,
   ...activeChatState,
+  ...activeChatUserState,
 };
 
 const store = createContext(initialState);

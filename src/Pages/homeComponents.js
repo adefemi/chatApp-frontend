@@ -9,7 +9,12 @@ import { PROFILE_URL } from "../urls";
 
 export const UserMain = (props) => {
   return (
-    <div className="flex align-center justify-between userMain">
+    <div
+      className={`flex align-center justify-between userMain ${
+        props.clickable ? "clickable" : ""
+      }`}
+      onClick={() => props.clickable && props.onClick()}
+    >
       <UserAvatar
         isV2
         name={props.name}
@@ -43,11 +48,8 @@ export const ChatBubble = (props) => {
   return (
     <div className={`chatbubbleCon ${props.bubbleType}`}>
       <div className="chatbubble">
-        <p>
-          This is just a random message content to test message fluidity and
-          access how content would be shown
-        </p>
-        <div className="time">08:22</div>
+        <p>{props.message}</p>
+        <div className="time">{props.time}</div>
       </div>
     </div>
   );
