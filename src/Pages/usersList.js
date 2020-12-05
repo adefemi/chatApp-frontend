@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import search from "../assets/search.png";
 import Loader from "../components/loader";
 import { axiosHandler, getToken } from "../helper";
+import { activeChatUserAction } from "../stateManagement/actions";
+import { store } from "../stateManagement/store";
 import { PROFILE_URL } from "../urls";
 import { UserMain } from "./homeComponents";
 
@@ -9,6 +11,8 @@ function UsersList() {
   const [users, setUsers] = useState([]);
   const [fetching, setFetching] = useState(true);
   const [nextPage, setNextPage] = useState(1);
+
+  const { dispatch } = useContext(store);
 
   useEffect(() => {
     getUserList();
@@ -28,6 +32,10 @@ function UsersList() {
       setUsers(_users.data.results);
       setFetching(false);
     }
+  };
+
+  const setActiveUser = (user_data) => {
+    dispatch({ type: activeChatUserAction, payload: user_data });
   };
 
   return (
@@ -51,6 +59,8 @@ function UsersList() {
               profilePicture={item.profile_picture}
               caption={item.caption}
               count={item.message_count}
+              clickable
+              onClick={() => setActiveUser(item)}
             />
           ))
         )}

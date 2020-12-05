@@ -2,6 +2,7 @@ import {
   updateChatAction,
   userDetailAction,
   activeChatAction,
+  activeChatUserAction,
 } from "./actions";
 
 export const updateChatState = {
@@ -10,6 +11,10 @@ export const updateChatState = {
 
 export const activeChatState = {
   activeChat: null,
+};
+
+export const activeChatUserState = {
+  activeChatUser: null,
 };
 
 export const userDetailState = {
@@ -21,6 +26,17 @@ export const activeChatReducer = (state, action) => {
     return {
       ...state,
       activeChat: action.payload,
+    };
+  } else {
+    return state;
+  }
+};
+
+export const activeChatUserReducer = (state, action) => {
+  if (action.type === activeChatUserAction) {
+    return {
+      ...state,
+      activeChatUser: action.payload,
     };
   } else {
     return state;

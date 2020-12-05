@@ -15,7 +15,10 @@ const SocketService = () => {
   const setupSocket = () => {
     socket = openSocket(SOCKET_URL);
     socket.on("command", (data) => {
-      if (userDetail !== data.receiver) return;
+      console.log(data);
+      console.log(userDetail);
+      if (!userDetail) return;
+      if (userDetail.id !== data.receiver) return;
       dispatch({ type: activeChatAction, payload: data });
     });
   };
