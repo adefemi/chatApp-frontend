@@ -21,8 +21,8 @@ export const UserMain = (props) => {
         profilePicture={props.profilePicture}
         caption={props.caption}
       />
-      {props.count ||
-        (props.count > 0 && <div className="counter">{props.count}</div>)}
+      {props.count &&
+        props.count > 0 && <div className="counter">{props.count}</div>}
     </div>
   );
 };

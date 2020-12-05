@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import favorite from "../assets/star.png";
 import smiley from "../assets/smiley.png";
 import send from "../assets/send.png";
 import { ChatBubble, UserAvatar } from "./homeComponents";
 import settings from "../assets/settings.png";
-import { sendTestSocket } from "../socketService";
 import Loader from "../components/loader";
 import { axiosHandler, errorHandler, getToken } from "../helper";
 import { MESSAGE_URL } from "../urls";
-import moment from "moment";
+import moment from "moment"
 import { activeChatAction } from "../stateManagement/actions";
 import { store } from "../stateManagement/store";
 
@@ -16,37 +15,41 @@ function ChatInterface(props) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [fetching, setFetching] = useState(true);
+  const [nextPage, setNextPage] = useState(1)
+  const [canGoNext, setCanGoNext] = useState(false)
 
-  const {
-    state: { activeChat },
-    dispatch,
-  } = useContext(store);
+  const {state:{activeChat}, dispatch} = useContext(store)
 
   const getMessages = async () => {
-    const token = await getToken();
+    const token = await getToken()
+    setCanGoNext(false)
 
-    const _messages = await axiosHandler({
-      method: "get",
+    const result = await axiosHandler({
+      method:"get",
       url: MESSAGE_URL + `?user_id=${props.activeUser.user.id}`,
-      token,
-    }).catch((e) => console.log(errorHandler(e)));
+      token
+    }).catch(e => console.log(errorHandler(e)))
 
-    if (_messages) {
-      setMessages(_messages.data.results.reverse());
-      setFetching(false);
+    if(result){
+      setMessages(result.data.results.reverse());
+      if(result.data.next){
+        setCanGoNext(true)
+        setNextPage(nextPage + 1)
+      }
+      setFetching(false)
     }
-  };
+  }
 
   useEffect(() => {
-    getMessages();
-  }, [props.activeUser]);
+    getMessages()
+  }, [])
 
   useEffect(() => {
-    if (activeChat) {
+    if(activeChat){
       getMessages();
-      dispatch({ type: activeChatAction, payload: null });
+      dispatch({type:activeChatAction, payload:null})
     }
-  }, [activeChat]);
+  }, [activeChat])
 
   const submitMessage = async (e) => {
     e.preventDefault();
@@ -55,31 +58,30 @@ function ChatInterface(props) {
       receiver_id: props.activeUser.user.id,
       message,
     };
+    const lastIndex = messages.length
     setMessages([...messages, data]);
     setMessage("");
 
-    const token = await getToken();
 
-    const _result = await axiosHandler({
-      method: "post",
+    const token = await getToken()
+    const result = await axiosHandler({
+      method:"post",
       url: MESSAGE_URL,
-      data,
-      token,
-    }).catch((e) => console.log(errorHandler(e)));
+      token, data
+    }).catch(e => console.log(errorHandler(e)))
 
-    if (_result) {
-      getMessages();
+    if(result){
+      messages[lastIndex] = result.data
+      setMessages(messages)
     }
   };
 
   const handleBubbleType = (item) => {
-    if (item.sender_id) {
-      if (item.sender_id === props.loggedUser.user.id) return "sender";
-    } else {
-      if (item.sender.user.id === props.loggedUser.user.id) return "sender";
-    }
-    return "";
-  };
+    if(item.sender_id) return "sender"
+
+    if(item.sender.user.id === props.loggedUser.user.id)return "sender"
+    else return ""
+  }
 
   return (
     <>
@@ -108,10 +110,7 @@ function ChatInterface(props) {
             <ChatBubble
               bubbleType={handleBubbleType(item)}
               message={item.message}
-              time={
-                item.created_at &&
-                moment(item.created).format("YYYY-MM-DD hh:mm a")
-              }
+              time={item.created_at ? moment(item.created_at).format("YYYY-MM-DD hh:mm a") : ""}
               key={key}
             />
           ))
