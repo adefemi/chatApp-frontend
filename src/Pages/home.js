@@ -61,7 +61,7 @@ const Home = (props) => {
               name={`${userdetail.first_name || ""} ${
                 userdetail.last_name || ""
               }`}
-              profilePicture={userdetail.profile_picture}
+              profilePicture={userdetail.profile_picture ? userdetail.profile_picture.file_upload : ""}
             />
             <img src={settings} onClick={() => setShowProfile(true)} />
           </div>

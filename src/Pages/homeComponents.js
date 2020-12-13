@@ -5,9 +5,15 @@ import Loader from "../components/loader";
 import { axiosHandler, errorHandler, getToken } from "../helper";
 import { userDetailAction } from "../stateManagement/actions";
 import { store } from "../stateManagement/store";
-import { PROFILE_URL } from "../urls";
+import { PROFILE_URL, FILE_UPLOAD_URL } from "../urls";
 
 export const UserMain = (props) => {
+  let _count = 0;
+  if(props.count){
+    if(parseInt(props.count) > 0){
+      _count = props.count;
+    }
+  }
   return (
     <div
       className={`flex align-center justify-between userMain ${
@@ -21,8 +27,10 @@ export const UserMain = (props) => {
         profilePicture={props.profilePicture}
         caption={props.caption}
       />
-      {props.count &&
-        props.count > 0 && <div className="counter">{props.count}</div>}
+      {
+        _count > 0 && <div className="counter">{props.count}</div>
+      }
+      
     </div>
   );
 };
@@ -55,12 +63,16 @@ export const ChatBubble = (props) => {
   );
 };
 
+let profileRef;
+
 export const ProfileModal = (props) => {
   const [profileData, setProfileData] = useState({
     ...props.userDetail,
     user_id: props.userDetail.user.id,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [pp, setPP] = useState(props.userDetail.profile_picture ? props.userDetail.profile_picture.file_upload : "")
 
   const { dispatch } = useContext(store);
 
@@ -70,7 +82,7 @@ export const ProfileModal = (props) => {
     const token = await getToken(props);
     const url =
       PROFILE_URL +
-      `${props.userDetail.first_name ? `/${profileData.user_id}` : ""}`;
+      `${props.userDetail.first_name ? `/${props.userDetail.id}` : ""}`;
     const method = props.userDetail.first_name ? "patch" : "post";
     const profile = await axiosHandler({
       method,
@@ -92,6 +104,20 @@ export const ProfileModal = (props) => {
     });
   };
 
+  const handleOnChange = async (e) => {
+    let data = new FormData()
+    data.append("file_upload", e.target.files[0])
+    setUploading(true)
+    const result = await axiosHandler({method:"post", url:FILE_UPLOAD_URL, data}).catch(
+      e => console.log(e)
+    )
+    setUploading(false)
+    if(result){
+      setPP(result.data.file_upload);
+      setProfileData({...profileData, profile_picture_id:result.data.id})
+    }
+  }
+
   return (
     <div className={`modalContain ${props.visible ? "open" : ""}`}>
       <div className="content-inner">
@@ -105,13 +131,23 @@ export const ProfileModal = (props) => {
               <div
                 className="imageCon"
                 style={{
-                  backgroundImage: `url("")`,
+                  backgroundImage: `url(${pp})`,
                 }}
               />
-              <div className="point">
-                Change Picture
-                <img src={edit} />
-              </div>
+              <input type="file" style={{display:"none"}} ref={e => profileRef = e} onChange={handleOnChange} />
+             {
+               !props.view && <>
+               {
+                  uploading ? <div className="point">
+                  Loading...
+                </div>:
+                  <div className="point" onClick={() => profileRef.click()}>
+                  Change Picture
+                  <img src={edit} />
+                </div>
+                }
+               </>
+             }
             </div>
             <div className="dataInput">
               <label>
@@ -120,6 +156,7 @@ export const ProfileModal = (props) => {
                   name="first_name"
                   value={profileData.first_name}
                   onChange={onChange}
+                  disabled={props.view}
                   required
                 />
               </label>
@@ -129,6 +166,7 @@ export const ProfileModal = (props) => {
                   name="last_name"
                   value={profileData.last_name}
                   onChange={onChange}
+                  disabled={props.view}
                   required
                 />
               </label>
@@ -138,6 +176,7 @@ export const ProfileModal = (props) => {
                   name="caption"
                   value={profileData.caption}
                   onChange={onChange}
+                  disabled={props.view}
                   required
                 />
               </label>
@@ -147,12 +186,14 @@ export const ProfileModal = (props) => {
                   name="about"
                   value={profileData.about}
                   onChange={onChange}
+                  disabled={props.view}
                   required
                 />
               </label>
             </div>
           </div>
-          <button type="submit" disabled={submitted}>
+          {
+            !props.view && <button type="submit" disabled={submitted}>
             {submitted ? (
               <center>
                 <Loader />
@@ -161,6 +202,7 @@ export const ProfileModal = (props) => {
               "Update"
             )}
           </button>
+          }
         </form>
       </div>
     </div>
