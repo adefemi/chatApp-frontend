@@ -7,10 +7,11 @@ import { ChatBubble, ProfileModal, UserAvatar } from "./homeComponents";
 import settings from "../assets/settings.png";
 import Loader from "../components/loader";
 import { axiosHandler, errorHandler, getToken } from "../helper";
-import { MESSAGE_URL, CHECK_FAVORITE_URL, UPDATE_FAVORITE_URL } from "../urls";
+import {MESSAGE_URL, CHECK_FAVORITE_URL, UPDATE_FAVORITE_URL, READ_MESSAGE_URL} from "../urls";
 import moment from "moment"
-import { activeChatAction } from "../stateManagement/actions";
+import {activeChatAction, triggerRefreshUserListAction} from "../stateManagement/actions";
 import { store } from "../stateManagement/store";
+import menu from "../assets/menu.svg"
 
 let goneNext = false;
 
@@ -20,8 +21,8 @@ function ChatInterface(props) {
   const [fetching, setFetching] = useState(true);
   const [nextPage, setNextPage] = useState(1)
   const [canGoNext, setCanGoNext] = useState(false)
-  const [showProfileModal, setShowProfileModal] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [shouldHandleScroll, setShouldHandleScroll] = useState(false)
 
   const {state:{activeChat}, dispatch} = useContext(store)
 
@@ -37,13 +38,13 @@ function ChatInterface(props) {
     }
   }
 
-  const getMessages = async (append=false) => {
+  const getMessages = async (append=false, page) => {
     const token = await getToken()
     setCanGoNext(false)
 
     const result = await axiosHandler({
       method:"get",
-      url: MESSAGE_URL + `?user_id=${props.activeUser.user.id}&page=${nextPage}`,
+      url: MESSAGE_URL + `?user_id=${props.activeUser.user.id}&page=${page ? page : nextPage}`,
       token
     }).catch(e => console.log(errorHandler(e)))
     
@@ -57,13 +58,18 @@ function ChatInterface(props) {
         setMessages(result.data.results.reverse());
       }
 
+      const messages_not_read = []
       result.data.results.map(item => {
         if(item.is_read)return null
         if(item.receiver.user.id === props.loggedUser.user.id){
-          updateMessage(item.id)
+          messages_not_read.push(item.id)
         }
         return null
       })
+
+      if(messages_not_read.length > 0){
+        updateMessage(messages_not_read)
+      }
       
       if(result.data.next){
         setCanGoNext(true)
@@ -72,19 +78,26 @@ function ChatInterface(props) {
       setFetching(false)
       if(!append){
         scrollToBottom()
+        setTimeout(() => setShouldHandleScroll(true), 1000)
       }
     }
   }
 
-  const updateMessage = async (message_id) => {
+  const updateMessage = async (message_ids) => {
     const token = await getToken()
-    axiosHandler({method:"patch", url:MESSAGE_URL+`/${message_id}`, token, data:{
-      is_read: true
-    }})
+    axiosHandler({method:"patch", url:READ_MESSAGE_URL, token, data:message_ids})
+    dispatch({type: triggerRefreshUserListAction, payload: true})
+  }
+
+  const reset = () => {
+    setMessages([])
+    setFetching(true)
+    setCanGoNext(false)
   }
 
   useEffect(() => {
-    getMessages()
+    reset()
+    getMessages(false, 1)
     checkIsFav()
   }, [props.activeUser])
 
@@ -148,6 +161,7 @@ function ChatInterface(props) {
   }
 
   const handleScroll = e => {
+    if(!shouldHandleScroll)return;
     if(e.target.scrollTop <= 100){
       if(canGoNext && !goneNext){
         goneNext = true;
@@ -156,28 +170,24 @@ function ChatInterface(props) {
     }
   }
 
+
+
   return (
     <>
-    <ProfileModal
-        {...props}
-        close={() => setShowProfileModal(false)}
-        userDetail={props.activeUser}
-        visible={showProfileModal}
-        closable={true}
-        setClosable={() => null}
-        view
-      />
       <div className="flex align-center justify-between heading">
-        <UserAvatar
-          name={`${props.activeUser.first_name || ""} ${
-            props.activeUser.last_name || ""
-          }`}
-          profilePicture={props.activeUser.profile_picture && props.activeUser.profile_picture.file_upload}
-          caption={props.activeUser.caption}
-        />
+        <div className="flex align-center">
+          <img src={menu} alt="" onClick={props.toggleSideBar}/>&nbsp;&nbsp;
+          <UserAvatar
+              name={`${props.activeUser.first_name || ""} ${
+                  props.activeUser.last_name || ""
+              }`}
+              profilePicture={props.activeUser.profile_picture && props.activeUser.profile_picture.file_upload}
+              caption={props.activeUser.caption}
+          />
+        </div>
         <div className="flex align-center rightItems">
           <img src={isFavorite ? favoriteActive : favorite} onClick={updateFav} />
-          <img src={settings} onClick={() => setShowProfileModal(true)} />
+          <img src={settings} onClick={() => props.setShowProfileModal(true)} />
         </div>
       </div>
       <div className="chatArea" id="chatArea" onScroll={handleScroll}>
@@ -200,7 +210,7 @@ function ChatInterface(props) {
       </div>
       <form onSubmit={submitMessage} className="messageZone">
         <div className="flex align-center justify-between topPart">
-          <img src={smiley} />
+          <div/>
           <button type="submit">
             <img src={send} />
           </button>

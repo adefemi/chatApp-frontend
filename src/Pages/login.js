@@ -75,14 +75,14 @@ const Login = (props) => {
             setError={setError}
             setShowPassword={setShowPassword}
           />
-          <div className="grid grid-2 grid-gap-2">
-            <div className="socialButton">
-              <img src={twitter} /> <span>Twitter</span>
-            </div>
-            <div className="socialButton">
-              <img src={google} /> <span>Google</span>
-            </div>
-          </div>
+          {/*<div className="grid grid-2 grid-gap-2">*/}
+          {/*  <div className="socialButton">*/}
+          {/*    <img src={twitter} /> <span>Twitter</span>*/}
+          {/*  </div>*/}
+          {/*  <div className="socialButton">*/}
+          {/*    <img src={google} /> <span>Google</span>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <div className="switchOption">
             Don’t have an accout yet? <Link to="/register">Sign up</Link>
           </div>
@@ -138,11 +138,11 @@ export const AuthForm = (props) => {
             onClick={() => props.setShowPassword(!props.showPassword)}
           />
         </div>
-        {props.login && (
-          <div className="flex justify-end">
-            <Link to="/">Forgot Password</Link>
-          </div>
-        )}
+        {/*{props.login && (*/}
+        {/*  <div className="flex justify-end">*/}
+        {/*    <Link to="/">Forgot Password</Link>*/}
+        {/*  </div>*/}
+        {/*)}*/}
         <button type="submit" disabled={props.loading}>
           {props.loading ? (
             <center>

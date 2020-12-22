@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import searchImg from "../assets/search.png";
 import Loader from "../components/loader";
 import { axiosHandler, getToken, LastUserChat } from "../helper";
-import { activeChatUserAction } from "../stateManagement/actions";
+import {activeChatUserAction, triggerRefreshUserListAction} from "../stateManagement/actions";
 import { store } from "../stateManagement/store";
 import { PROFILE_URL } from "../urls";
 import { UserMain } from "./homeComponents";
@@ -16,11 +16,19 @@ function UsersList() {
   const [canGoNext, setCanGoNext] = useState(false);
   const [search, setSearch] = useState("")
 
-  const { dispatch } = useContext(store);
+  const { state:{triggerRefreshUserList}, dispatch } = useContext(store);
 
   useEffect(() => {
     getUserList();
   }, [search]);
+
+  useEffect(() => {
+    if(triggerRefreshUserList){
+      getUserList()
+      dispatch({type: triggerRefreshUserListAction, payload: false})
+    }
+
+  }, [triggerRefreshUserList])
 
   const getUserList = async (append=false) => {
     let extra="";
@@ -58,7 +66,7 @@ function UsersList() {
     if(lastUserChat){
       lastUserChat = JSON.parse(lastUserChat);
       if(users.filter(item => item.id === lastUserChat.id).length){
-        dispatch({ type: activeChatUserAction, payload: lastUserChat });
+        setActiveUser(lastUserChat)
       }
     }
   }

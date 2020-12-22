@@ -177,11 +177,23 @@ button {
     height: 24px;
   }
 
+  .overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+
   .side {
     width: 350px;
     box-sizing: border-box;
     background-color: $primaryColorLight;
     position: relative;
+    transition: .5s ease;
+
 
     .top {
       padding: 30px;
@@ -190,6 +202,8 @@ button {
         height: 18px;
       }
     }
+
+
   }
 
   .main {
@@ -202,14 +216,72 @@ button {
       padding: 0 50px;
       height: 80px;
 
+      @media screen and (max-width: 480px) {
+        padding: 0 20px;
+      }
+
       .rightItems {
+        img{
+          @media screen and (max-width: 480px) {
+            width: 20px;
+            height: 20px;
+          }
+        }
         img:first-child {
           width: 18px;
           height: 18px;
           margin-right: 20px;
+
+          @media screen and (max-width: 480px) {
+            width: 15px;
+            height: 15px;
+          }
         }
       }
     }
+  }
+
+  @media screen and (max-width: 768px){
+    display: block;
+    position: relative;
+
+    .side{
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 11;
+      top: 0;
+
+      &.close{
+        left: -350px;
+
+        & ~ .overlay{
+          display: none;
+        }
+      }
+    }
+    .main{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.mobile{
+  display: none;
+}
+
+.desktop{
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  .mobile{
+    display: block;
+  }
+  .desktop{
+    display: none;
   }
 }
 
@@ -253,17 +325,30 @@ button {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+
+    @media screen and (max-width: 480px) {
+      width: 35px;
+      height: 35px;
+    }
   }
 
   .name {
     font-size: 16px;
     font-weight: 500;
     color: white;
+
+    @media screen and (max-width: 480px) {
+      font-size: 13px;
+    }
   }
 
   .subContent {
     font-size: 12px;
     color: rgba(white, 0.4);
+
+    @media screen and (max-width: 480px) {
+      font-size: 10px;
+    }
   }
   &.version2 {
     .imageCon {
@@ -348,6 +433,10 @@ button {
   width: 100%;
   box-sizing: border-box;
   transition: .5s ease;
+
+  @media screen and (max-width: 480px) {
+    padding: 20px;
+  }
 }
 
 .messageZone {
@@ -355,6 +444,16 @@ button {
   height: 150px;
   padding: 10px 40px;
   box-sizing: border-box;
+
+  @media screen and (max-width: 480px) {
+    padding: 10px 20px;
+    height: 120px;
+
+    img{
+      width: 20px;
+      height: 20px;
+    }
+  }
 
   input {
     margin-top: 20px;
@@ -367,6 +466,10 @@ button {
     box-sizing: border-box;
     outline: none;
     color: white;
+
+    @media screen and (max-width: 480px) {
+      margin-top: 10px;
+    }
   }
 
   button {
@@ -507,6 +610,19 @@ button {
         margin: 0 auto;
         margin-bottom: 50px;
       }
+
+      @media screen and (max-width: 500px) {
+        padding: 10px;
+
+        .inner{
+          flex-direction: column;
+
+          .leftHook{
+            margin-right: 0;
+            margin-bottom: 30px;
+          }
+        }
+      }
     }
   }
 
@@ -568,6 +684,7 @@ button {
 .noUser {
   font-size: 14px;
   color: white;
+  text-align: center;
 }
 
 .clickable {

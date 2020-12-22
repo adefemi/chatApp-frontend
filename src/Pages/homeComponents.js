@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import close from "../assets/close.png";
+import React, { useContext, useState, useEffect } from "react";
+import close from "../assets/close.svg";
 import edit from "../assets/edit.png";
 import Loader from "../components/loader";
 import { axiosHandler, errorHandler, getToken } from "../helper";
@@ -104,6 +104,16 @@ export const ProfileModal = (props) => {
     });
   };
 
+  useEffect(() => {
+    if(props.visible){
+      setProfileData({
+        ...props.userDetail,
+        user_id: props.userDetail.user.id,
+      })
+      setPP(props.userDetail.profile_picture ? props.userDetail.profile_picture.file_upload : "")
+    }
+  }, [props.visible])
+
   const handleOnChange = async (e) => {
     let data = new FormData()
     data.append("file_upload", e.target.files[0])
@@ -122,7 +132,7 @@ export const ProfileModal = (props) => {
     <div className={`modalContain ${props.visible ? "open" : ""}`}>
       <div className="content-inner">
         <div className="header">
-          <div className="title">Update Profile</div>
+          <div className="title">{props.view ? "View" : "Update"} Profile</div>
           {props.closable && <img src={close} onClick={props.close} />}
         </div>
         <form className="content" onSubmit={submit}>

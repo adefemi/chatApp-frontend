@@ -9,12 +9,15 @@ import Loader from "../components/loader";
 import { logout } from "./authController";
 import UsersList from "./usersList";
 import ChatInterface from "./chatInterface";
+import menu from "../assets/menu.svg";
+import close from "../assets/close.svg";
 
 const Home = (props) => {
   const [showProfile, setShowProfile] = useState(false);
   const [profileClosable, setProfileClosable] = useState(true);
   const [userdetail, setUserDetail] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false)
 
   const {
     state: { userDetail, activeChatUser },
@@ -31,7 +34,9 @@ const Home = (props) => {
 
     if (activeUser !== activeChatUser) {
       setActiveUser(activeChatUser);
+      closeSideBar();
     }
+    console.log(activeChatUser)
   }, [userDetail, activeChatUser]);
 
   if (!userdetail) {
@@ -41,6 +46,25 @@ const Home = (props) => {
       </div>
     );
   }
+
+  const toggleSideBar = () => {
+    const sideBar = document.getElementById("sideBar")
+    if(sideBar.classList.contains("close")){
+      sideBar.classList.remove("close")
+    }
+    else{
+      sideBar.classList.add("close")
+    }
+  }
+
+  const closeSideBar = () => {
+    const sideBar = document.getElementById("sideBar")
+    if(!sideBar.classList.contains("close")){
+      sideBar.classList.add("close")
+    }
+  }
+
+
 
   return (
     <>
@@ -52,8 +76,23 @@ const Home = (props) => {
         closable={profileClosable}
         setClosable={() => setProfileClosable(true)}
       />
+
+      {
+        activeUser && <ProfileModal
+            {...props}
+            close={() => setShowProfileModal(false)}
+            userDetail={activeChatUser}
+            visible={showProfileModal}
+            closable={true}
+            setClosable={() => null}
+            view
+        />
+      }
+
       <div className="home-container">
-        <div className="side">
+
+        <div className="side close" id="sideBar">
+
           <div className="flex align-center justify-between top">
             <UserAvatar
               noStatus
@@ -63,7 +102,13 @@ const Home = (props) => {
               }`}
               profilePicture={userdetail.profile_picture ? userdetail.profile_picture.file_upload : ""}
             />
-            <img src={settings} onClick={() => setShowProfile(true)} />
+            <div>
+              <img src={settings} onClick={() => {
+                setShowProfile(true);
+                closeSideBar();
+              }} />&nbsp;&nbsp;&nbsp;&nbsp;
+              <img src={close} alt="" onClick={toggleSideBar} style={{width:15}}/>
+            </div>
           </div>
 
           <UsersList />
@@ -72,11 +117,21 @@ const Home = (props) => {
             <div>logout</div>
           </div>
         </div>
+        <div className="mobile overlay" onClick={toggleSideBar}/>
+
         <div className="main">
+
           {activeUser ? (
-            <ChatInterface activeUser={activeUser} loggedUser={userdetail} />
+            <ChatInterface activeUser={activeUser} loggedUser={userdetail} toggleSideBar={toggleSideBar}
+                           showProfileModal={showProfileModal} setShowProfileModal={setShowProfileModal} />
           ) : (
-            <div className="noUser">Click on a user to start chatting</div>
+              <div>
+                <div className="heading mobile">
+                  <div style={{height:"100%"}} className="flex align-center">
+                    <img src={menu} alt="" onClick={toggleSideBar}/>&nbsp;&nbsp;</div>
+                </div>
+                <div className="noUser">Click on a user to start chatting</div>
+              </div>
           )}
         </div>
       </div>
