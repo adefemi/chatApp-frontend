@@ -85,7 +85,7 @@ function ChatInterface(props) {
 
   const updateMessage = async (message_ids) => {
     const token = await getToken()
-    axiosHandler({method:"post", url:READ_MESSAGE_URL, token, data:message_ids})
+    axiosHandler({method:"post", url:READ_MESSAGE_URL, token, data:{message_ids}})
     dispatch({type: triggerRefreshUserListAction, payload: true})
   }
 
