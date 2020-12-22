@@ -85,7 +85,7 @@ function ChatInterface(props) {
 
   const updateMessage = async (message_ids) => {
     const token = await getToken()
-    axiosHandler({method:"patch", url:READ_MESSAGE_URL, token, data:message_ids})
+    axiosHandler({method:"post", url:READ_MESSAGE_URL, token, data:message_ids})
     dispatch({type: triggerRefreshUserListAction, payload: true})
   }
 
@@ -176,7 +176,9 @@ function ChatInterface(props) {
     <>
       <div className="flex align-center justify-between heading">
         <div className="flex align-center">
-          <img src={menu} alt="" onClick={props.toggleSideBar}/>&nbsp;&nbsp;
+          <div className="mobile">
+            <img src={menu} alt="" onClick={props.toggleSideBar}/>&nbsp;&nbsp;
+          </div>
           <UserAvatar
               name={`${props.activeUser.first_name || ""} ${
                   props.activeUser.last_name || ""

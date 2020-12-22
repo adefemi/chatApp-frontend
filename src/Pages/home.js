@@ -106,8 +106,10 @@ const Home = (props) => {
               <img src={settings} onClick={() => {
                 setShowProfile(true);
                 closeSideBar();
-              }} />&nbsp;&nbsp;&nbsp;&nbsp;
+              }} /><div className="mobile">
+              &nbsp;&nbsp;&nbsp;&nbsp;
               <img src={close} alt="" onClick={toggleSideBar} style={{width:15}}/>
+            </div>
             </div>
           </div>
 
